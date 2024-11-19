@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Rutas absolutas para evitar problemas en Jenkins
+COLLECTION="/home/APICats/collections/TheCatAPI.postman_collection.json"
+ENVIRONMENT="/home/APICats/environment/TheCatAPI Environment.postman_environment.json"
+REPORT_DIR="/home/APICats/reports/newman"
+REPORT_FILE="report.html"
+
+# Crear directorio de reportes si no existe
+mkdir -p "$REPORT_DIR"
+
+# Ejecutar Newman
+echo "Iniciando pruebas con Newman..."
+newman run "$COLLECTION" \
+    -e "$ENVIRONMENT" \
+    --reporters cli,html \
+    --reporter-html-export "$REPORT_DIR/$REPORT_FILE"
+
+# Verificar estado de salida
+if [ $? -eq 0 ]; then
+    echo "Pruebas completadas exitosamente. Reporte generado en: $REPORT_DIR/$REPORT_FILE"
+    exit 0
+else
+    echo "Error: Las pruebas fallaron. Revisa los logs y el reporte."
+    exit 1
+fi
